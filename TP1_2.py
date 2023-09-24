@@ -104,6 +104,8 @@ print(f"Running TSNE on {num_elements} elements")
 # Do clustering for 2d visulaisation
 tsne = TSNE(n_components=2, perplexity=30, random_state=42)
 
+X_tsne_base = tsne.fit_transform(X.values[:num_elements, :])
+print("tsne base done")
 X_tsne_pca_sk = tsne.fit_transform(X_pca_sk[:num_elements, :])
 print("tsne pca sk done")
 X_tsne_pca = tsne.fit_transform(X_pca[:num_elements, :])
@@ -112,25 +114,28 @@ X_tsne_skb = tsne.fit_transform(X_skb[:num_elements, :])
 print("tsne skb done")
 
 # Set up fig
-fig, axs = plt.subplots(1, 3, figsize=(18, 6))
-ax1, ax2, ax3 = axs
+fig, axs = plt.subplots(2, 2, figsize=(18, 18))
+ax1, ax2, ax3, ax4 = axs.flatten()
 
 def plot_map(ax, dim1, dim2, y_data, title):
-    scatter = ax.scatter(dim1, dim2, c=y_data, cmap='viridis', marker='o', s=50)
+    scatter = ax.scatter(dim1, dim2, c=y_data, cmap='viridis', marker='o', s=5)
     ax.set_title(title)
     ax.set_xlabel('Dimension 1')
     ax.set_ylabel('Dimension 2')
     cbar = plt.colorbar(scatter, ax=ax)
     cbar.set_label(f'Regression Target ({target})')
 
+# Visualise tsne for no dimensionality reduction
+plot_map(ax1, X_tsne_base[:, 0], X_tsne_base[:, 1], y_red, 't-SNE Visualization for no dimensionality reduction')
+
 # Visualise tsne for PCA sklearn
-plot_map(ax1, X_tsne_pca_sk[:, 0], X_tsne_pca_sk[:, 1], y_red, 't-SNE Visualization for PCA sklearn')
+plot_map(ax2, X_tsne_pca_sk[:, 0], X_tsne_pca_sk[:, 1], y_red, 't-SNE Visualization for PCA sklearn')
 
 # Visualise tsne for myPCA
-plot_map(ax2, X_tsne_pca[:, 0], X_tsne_pca[:, 1], y_red, 't-SNE Visualization for PCA')
+plot_map(ax3, X_tsne_pca[:, 0], X_tsne_pca[:, 1], y_red, 't-SNE Visualization for PCA')
 
 # Visualise tsne for SelectKBest
-plot_map(ax3, X_tsne_skb[:, 0], X_tsne_skb[:, 1], y_red, 't-SNE Visualization for SelectKBest (chi2)')
+plot_map(ax4, X_tsne_skb[:, 0], X_tsne_skb[:, 1], y_red, 't-SNE Visualization for SelectKBest (chi2)')
 
 # Show
 plt.tight_layout()
