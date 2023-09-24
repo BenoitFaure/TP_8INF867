@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.preprocessing import MinMaxScaler
 
 # -----------------DATAPROCESSING-----------------
 print("\n 1] DATAPROCESSING \n")
@@ -26,13 +27,17 @@ df.fillna(0, inplace=True) # Replace missing values by 0
 # c) Categorical variable
 #   No categorical variables here
 
-# d) Extract features and target values
+# d) Scaling
+cols_to_scale = ['BMI', 'GenHlth', 'MentHlth', 'PhysHlth', 'Age', 'Education', 'Income']
+df[cols_to_scale] = MinMaxScaler().fit_transform(df[cols_to_scale])
+
+# e) Extract features and target values
 X, y = df.drop(columns=[target]), df[[target]]
 
 # ------------DIMENSIONALITY REDUCTION------------
 print("\n 2] DIMENSIONALITY REDUCTION \n")
 
-num_features = 3
+num_features = 10
 print(f"Reducing to {num_features} features")
 
 # a) PCA - sklearn  ------------------------------
