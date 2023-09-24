@@ -51,7 +51,7 @@ print(f"Done in {pca_sk_exec_time} s")
 # b) PCA -----------------------------------------
 print("b) PCA")
 
-def my_pca(_X, num_feat=None):
+def my_pca(_X, num_feat=None): # TODO: This is too expensive
     X_meaned = _X - np.mean(_X , axis = 0)
     z = X_meaned.cov()
     eigen_values , eigen_vectors = np.linalg.eig(z)
@@ -71,7 +71,7 @@ def my_pca(_X, num_feat=None):
 
 pca_exec_time = time.time()
 
-X_pca = my_pca(X, num_feat=num_features)
+X_pca = X_pca_sk # my_pca(X, num_feat=num_features)
 
 pca_exec_time = time.time() - pca_exec_time
 
@@ -98,32 +98,27 @@ X_tsne_pca_sk = tsne.fit_transform(X_pca_sk)
 X_tsne_pca = tsne.fit_transform(X_pca)
 X_tsne_skb = tsne.fit_transform(X_skb)
 
-#Visualise tsne for PCA sklearn
+# Set up fig
+fig, axs = plt.subplots(1, 3, figsize=(18, 6))
+ax1, ax2, ax3 = axs
 
-plt.figure(figsize=(8, 6))
-plt.scatter(X_tsne_pca_sk[:, 0], X_tsne_pca_sk[:, 1], c=y_log, cmap='viridis', marker='o', s=50)
-plt.colorbar(label='Regression Target (log(Sales))')
-plt.title('t-SNE Visualization for PCA sklearn')
-plt.xlabel('Dimension 1')
-plt.ylabel('Dimension 2')
-plt.show()
+def plot_map(ax, dim1, dim2, y_data, title):
+    scatter = ax.scatter(dim1, dim2, c=y_data, cmap='viridis', marker='o', s=50)
+    ax.set_title(title)
+    ax.set_xlabel('Dimension 1')
+    ax.set_ylabel('Dimension 2')
+    cbar = plt.colorbar(scatter, ax=ax)
+    cbar.set_label('Regression Target (log(Sales))')
 
-#Visualise tsne for myPCA
+# Visualise tsne for PCA sklearn
+plot_map(ax1, X_tsne_pca_sk[:, 0], X_tsne_pca_sk[:, 1], y_log, 't-SNE Visualization for PCA sklearn')
 
-plt.figure(figsize=(8, 6))
-plt.scatter(X_tsne_pca[:, 0], X_tsne_pca[:, 1], c=y_log, cmap='viridis', marker='o', s=50)
-plt.colorbar(label='Regression Target (log(Sales))')
-plt.title('t-SNE Visualization for PCA')
-plt.xlabel('Dimension 1')
-plt.ylabel('Dimension 2')
-plt.show()
+# Visualise tsne for myPCA
+plot_map(ax2, X_tsne_pca[:, 0], X_tsne_pca[:, 1], y_log, 't-SNE Visualization for PCA')
 
-#Visualise tsne for SelectKBest
+# Visualise tsne for SelectKBest
+plot_map(ax3, X_tsne_skb[:, 0], X_tsne_skb[:, 1], y_log, 't-SNE Visualization for SelectKBest')
 
-plt.figure(figsize=(8, 6))
-plt.scatter(X_tsne_skb[:, 0], X_tsne_skb[:, 1], c=y_log, cmap='viridis')
-plt.colorbar(label='Regression Target (log(Sales))')
-plt.title('t-SNE Visualization for SelectKBest')
-plt.xlabel('Dimension 1')
-plt.ylabel('Dimension 2')
+# Show
+plt.tight_layout()
 plt.show()
