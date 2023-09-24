@@ -13,7 +13,7 @@ from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest, f_regression
 
 # -----------------DATAPROCESSING-----------------
-print("1] DATAPROCESSING")
+print("\n 1] DATAPROCESSING \n")
 
 # a) Load data
 df = pd.read_csv('train.csv')
@@ -31,13 +31,13 @@ X, y = df_dummies.drop(columns=['Sales']), df_dummies[['Sales']]
 y_log = np.log(y['Sales']) #Scale the Sales to make it more uniform
 
 # ------------DIMENSIONALITY REDUCTION------------
-print("2] DIMENSIONALITY REDUCTION")
+print("\n 2] DIMENSIONALITY REDUCTION \n")
 
 num_features = 10
 print(f"Reducing to {num_features} features")
 
 # a) PCA - sklearn  ------------------------------
-print("a) PCA - sklearn")
+print("\n a) PCA - sklearn")
 
 pca_sk_exec_time = time.time()
 
@@ -49,7 +49,7 @@ pca_sk_exec_time = time.time() - pca_sk_exec_time
 print(f"Done in {pca_sk_exec_time} s")
 
 # b) PCA -----------------------------------------
-print("b) PCA")
+print("\n b) PCA")
 
 def my_pca(_X, num_feat=None): # TODO: This is too expensive
     X_meaned = _X - np.mean(_X , axis = 0)
@@ -78,7 +78,7 @@ pca_exec_time = time.time() - pca_exec_time
 print(f"Done in {pca_exec_time} s")
 
 # c) SelectKBest ---------------------------------
-print("c) SelectKBest (f_regression)")
+print("\n c) SelectKBest (f_regression)")
 
 skb_exec_time = time.time()
 
@@ -91,6 +91,8 @@ print(f"Done in {skb_exec_time} s")
 print(skb_obj.get_feature_names_out(X.columns))
 
 # -------------------COMPARISON-------------------
+print("\n 3] COMPARISON \n")
+
 # Do clustering for 2d visulaisation
 tsne = TSNE(n_components=2, perplexity=30, random_state=42)
 
